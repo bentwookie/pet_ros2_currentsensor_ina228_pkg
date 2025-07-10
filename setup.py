@@ -15,12 +15,12 @@ setup(
     zip_safe=True,
     maintainer='SeniorKullken',
     maintainer_email='stefan.kull@gmail.com',
-    description='ROS2-publisher for the Current/Voltage(Battery State) sensor INA219. Publish measurement as ROS2-topics.',
+    description='ROS2-publisher for the Current/Voltage(Battery State) sensor INA228. Publish measurement as ROS2-topics.',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "pet_battery_state_ina219_node=pet_ros2_battery_state_pkg.pet_battery_state_ina219_node:main"
+            "pet_battery_state_ina228_node=pet_ros2_battery_state_pkg.pet_battery_state_ina228_node:main"
         ],
     },
 )

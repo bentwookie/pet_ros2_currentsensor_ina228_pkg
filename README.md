@@ -1,12 +1,16 @@
-# pet_ros2_currentsensor_ina219_pkg
-ROS2-publisher for the Current/Voltage sensor INA219. Publish measurement as ROS2-topics.
+# pet_ros2_currentsensor_ina228_pkg
+ROS2-publisher for the Current/Voltage sensor INA228. Publish measurement as ROS2-topics.
 
-**Input:** Current&Voltage shount on a I2C-INA219 sensor-breakout-board. \
+This is a fork of [pet_ros2_currentsensor_ina219_pkg](https://github.com/Pet-Series/pet_ros2_currentsensor_ina219_pkg) tweaked to use the INA228 Adafruit libraries. I mostly just did a search and replace, so it might not be 100% correct.
+
+I also added a ROS2 argument "i2c_address" for specifying the I2C address 
+
+**Input:** Current&Voltage shount on a I2C-INA228 sensor-breakout-board. \
 **Output:** ROS node (ROS2) that publish topics with voltage & current values.
 
 <table>
     <td>Wireing Diagram<br>
-        <img src="./doc/pet_ros2_currentsensor(INA219)_wiring.png" height="350px">
+        <img src="./doc/pet_ros2_currentsensor(INA228)_wiring.png" height="350px">
     </td>
     <td>Installation<br>
         <img src="./doc/pet_ros2_currentsensor(photo01).jpg" height="350px">
@@ -17,7 +21,7 @@ ROS2-publisher for the Current/Voltage sensor INA219. Publish measurement as ROS
 
 # Prerequisite: Hardware
 * Single Board Computer(SBC): Raspberry Pi 3/4
-* Sensor: INA2129 Current Sensor via default I2C adr.=<code>0x4o</code>
+* Sensor: INA228 Current Sensor via default I2C adr.=<code>0x4o</code>
 
 # Prerequisite: Software
 * Ubuntu 20.04 (64bit) or newer
@@ -31,7 +35,7 @@ Prepared by adding additional, i2c communication, Linux-software-packages <br/>
 ~$ sudo apt install i2c-tools
 ~$ sudo apt install python3-pip
 ~$ sudo pip3 install adafruit-blinka
-~$ sudo pip3 install adafruit-circuitpython-ina219
+~$ sudo pip3 install adafruit-circuitpython-ina228
 ~$ sudo i2cdetect -y 1
         0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
    00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
@@ -56,7 +60,7 @@ Dowload ROS2 package by using 'git clone'
 ```
 ~$ mkdir -p ~/ws_ros2/src
 ~$ cd ~/ws_ros2/src
-~/ws_ros2/src$ git clone https://github.com/Pet-Series/pet_ros2_currentsensor_ina219_pkg.git
+~/ws_ros2/src$ git clone https://github.com/Pet-Series/pet_ros2_currentsensor_ina228_pkg.git
 ~/ws_ros2/src$ cd ..
 ~/ws_ros2$ colcon build --symlink-install
 ~/ws_ros2$ source /opt/ros/galactic/setup.bash
@@ -66,14 +70,10 @@ Dowload ROS2 package by using 'git clone'
 # ROS2 Launch sequence
 `Ubuntu Shell #1`
 ```
-$ ros2 run pet_ros2_battery_state_pkg pet_battery_state_ina219_node  
-    [INFO] [1649019010.401689937] [pet_current_sensor_node]: INA219 Current/Voltage sensor. Config register: 
-    [INFO] [1649019010.404738606] [pet_current_sensor_node]:  - bus_voltage_range:    0x1
-    [INFO] [1649019010.407764240] [pet_current_sensor_node]:  - gain:                 0x3
-    [INFO] [1649019010.410825520] [pet_current_sensor_node]:  - bus_adc_resolution:   0x3
-    [INFO] [1649019010.413920782] [pet_current_sensor_node]:  - shunt_adc_resolution: 0x3
-    [INFO] [1649019010.417161487] [pet_current_sensor_node]:  - mode:                 0x7
-    [INFO] [1649019010.420058696] [pet_current_sensor_node]: ....  
+$ ros2 run pet_ros2_battery_state_pkg pet_battery_state_ina228_node --ros-args -p i2c_address:="0x45"
+[INFO] [1752182292.851039980] [pet_current_sensor_node]: INA228 Current/Voltage sensor. Config register:
+[INFO] [1752182292.853003315] [pet_current_sensor_node]:  - mode:                 0xF
+[INFO] [1752182292.853993908] [pet_current_sensor_node]: 
 ```
 
 `Ubuntu Shell #2`

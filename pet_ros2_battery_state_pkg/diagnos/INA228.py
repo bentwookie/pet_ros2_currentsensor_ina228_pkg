@@ -12,49 +12,49 @@
 #	60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 #	70: -- -- -- -- -- -- -- --                         
 # $ 
-# $ sudo pip3 install adafruit-circuitpython-ina219
+# $ sudo pip3 install adafruit-circuitpython-ina228
 # $ sudo pip3 install adafruit-blinka
 #
-# $ sudo python3 INA219.py 
-# $ python3 INA219.py 
+# $ sudo python3 INA228.py 
+# $ python3 INA228.py 
 #
-"""Sample code and test for adafruit_ina219"""
+"""Sample code and test for adafruit_ina228"""
 
 import time
 import board
-from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
+from adafruit_ina228 import ADCResolution, BusVoltageRange, INA228
 
 
 i2c_bus = board.I2C()
 
-ina219 = INA219(i2c_bus)
+ina228 = INA228(i2c_bus)
 
-print("ina219 test")
+print("ina228 test")
 
 # display some of the advanced field (just to test)
 print("Config register:")
-print("  bus_voltage_range:    0x%1X" % ina219.bus_voltage_range)
-print("  gain:                 0x%1X" % ina219.gain)
-print("  bus_adc_resolution:   0x%1X" % ina219.bus_adc_resolution)
-print("  shunt_adc_resolution: 0x%1X" % ina219.shunt_adc_resolution)
-print("  mode:                 0x%1X" % ina219.mode)
+print("  bus_voltage_range:    0x%1X" % ina228.bus_voltage_range)
+print("  gain:                 0x%1X" % ina228.gain)
+print("  bus_adc_resolution:   0x%1X" % ina228.bus_adc_resolution)
+print("  shunt_adc_resolution: 0x%1X" % ina228.shunt_adc_resolution)
+print("  mode:                 0x%1X" % ina228.mode)
 print("")
 
 # optional : change configuration to use 32 samples averaging for both bus voltage and shunt voltage
-ina219.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
-ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
+ina228.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
+ina228.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 
 # optional : change voltage range to 16V
-ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
+ina228.bus_voltage_range = BusVoltageRange.RANGE_16V
 
 # measure and display loop
 while True:
-    bus_voltage = ina219.bus_voltage  # voltage on V- (load side)
-    shunt_voltage = ina219.shunt_voltage  # voltage between V+ and V- across the shunt
-    current = ina219.current  # current in mA
-    power = ina219.power  # power in watts
+    bus_voltage = ina228.bus_voltage  # voltage on V- (load side)
+    shunt_voltage = ina228.shunt_voltage  # voltage between V+ and V- across the shunt
+    current = ina228.current  # current in mA
+    power = ina228.power  # power in watts
 
-    # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
+    # INA228 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
     print("Voltage (VIN+) : {:6.3f}   V".format(bus_voltage + shunt_voltage))
     print("Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
     print("Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
@@ -64,7 +64,7 @@ while True:
     print("")
 
     # Check internal calculations haven't overflowed (doesn't detect ADC overflows)
-    if ina219.overflow:
+    if ina228.overflow:
         print("Internal Math Overflow Detected!")
         print("")
 

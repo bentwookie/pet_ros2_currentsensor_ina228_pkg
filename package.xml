@@ -3,7 +3,7 @@
 <package format="3">
   <name>pet_ros2_battery_state_pkg</name>
   <version>0.0.1</version>
-  <description>ROS2-publisher for the Current/Voltage sensor INA219. Publish measurement as ROS2-topics.</description>
+  <description>ROS2-publisher for the Current/Voltage sensor INA228. Publish measurement as ROS2-topics.</description>
   <maintainer email="stefan.kull@gmail.com">pi</maintainer>
   <license>MIT</license>
 

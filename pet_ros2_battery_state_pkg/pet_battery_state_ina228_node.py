@@ -4,20 +4,20 @@
 ##
 ## Maintainer: stefan.kull@gmail.com
 ## 
-## Input: INA219 Current/Voltage-sensor (a.k.a "Battery State")
+## Input: INA228 Current/Voltage-sensor (a.k.a "Battery State")
 ## Output: ROS2 node that publish a BatteryState.msg topic 
 ##
 ## Prerequisite:
 ## Software
 ## ~$ sudo apt install python3-pip
 ## ~$ sudo pip3 install adafruit-blinka
-## ~$ sudo pip3 install adafruit-circuitpython-ina219
+## ~$ sudo pip3 install adafruit-circuitpython-ina228
 ##
-## Hardware: Power circuit via INA219 break-out-board (Power at VIn+, Drain/Source at VIn- )
+## Hardware: Power circuit via INA228 break-out-board (Power at VIn+, Drain/Source at VIn- )
 ## Host: Raspberry Pi 4(Ubuntu) via I2C
 ##
 ## Launch sequence:
-## 1) $ ros2 run pet_ros2_currentsensor_ina219_pkg pet_current_sensor_ina219_node.py 
+## 1) $ ros2 run pet_ros2_currentsensor_ina228_pkg pet_current_sensor_ina228_node.py 
 ## 2) $ ros2 topic echo /battery_status
 ##
 
@@ -29,7 +29,7 @@ from sensor_msgs.msg  import BatteryState
 # Import the Ubuntu/Linux-hardware stuff 
 import time
 import board
-from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
+from adafruit_ina228 import INA228
 
 # Import the common Ubuntu/Linux stuff 
 import sys
@@ -50,23 +50,16 @@ class BatteryStatePublisher(Node):
         # Initiate the Node class's constructor and give it a name
         super().__init__("pet_current_sensor_node")
 
+        # Declare the i2c_address parameter with a default value of '0x40' 
+        self.declare_parameter('i2c_address', 0x40)
+        i2c_address = self.get_parameter('i2c_address').get_parameter_value().integer_value
+
         i2c_bus = board.I2C()
-        self.ina219 = INA219(i2c_bus)
-
-        # optional : change configuration to use 32 samples averaging for both bus voltage and shunt voltage
-        self.ina219.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
-        self.ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
-
-        # optional : change voltage range to 16V
-        self.ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
+        self.ina228 = INA228(i2c_bus, i2c_address)
 
         # display some of the advanced field (just to test)
-        self.get_logger().info("INA219 Current/Voltage sensor. Config register:")
-        self.get_logger().info(" - bus_voltage_range:    0x%1X" % self.ina219.bus_voltage_range)
-        self.get_logger().info(" - gain:                 0x%1X" % self.ina219.gain)
-        self.get_logger().info(" - bus_adc_resolution:   0x%1X" % self.ina219.bus_adc_resolution)
-        self.get_logger().info(" - shunt_adc_resolution: 0x%1X" % self.ina219.shunt_adc_resolution)
-        self.get_logger().info(" - mode:                 0x%1X" % self.ina219.mode)
+        self.get_logger().info("INA228 Current/Voltage sensor. Config register:")
+        self.get_logger().info(" - mode:                 0x%1X" % self.ina228.mode)
         self.get_logger().info("")
 
         # Create Message  <https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/BatteryState.msg>
@@ -115,10 +108,9 @@ class BatteryStatePublisher(Node):
         self.msg_battery.header.stamp.sec  = int(current_time[1])
         self.msg_battery.header.stamp.nanosec = int(current_time[0] * 1000000000) & 0xffffffff
 
-        self.msg_battery.voltage = self.ina219.bus_voltage       # voltage on V- (load side)
-        self.msg_battery.current = self.ina219.current /1000.0   # current in mA->A
+        self.msg_battery.voltage = self.ina228.bus_voltage       # voltage on V- (load side)
+        self.msg_battery.current = self.ina228.current /1000.0   # current in mA->A
         # print(self.msg_battery.voltage)
-        
         # Publish BatteryState message 
         self.publisher_battery_state.publish(self.msg_battery) 
 
